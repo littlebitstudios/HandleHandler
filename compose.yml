@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  httpd:
+    image: httpd:latest
+    ports:
+      - "8083:80"
+    volumes:
+      - ./html:/usr/local/apache2/htdocs/
+      - ./httpd.conf:/usr/local/apache2/conf/httpd.conf
+    restart: unless-stopped

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LittleBit's Handle Handler</title>
+</head>
+<body>
+    <script>
+        // Function to parse the handle and redirect
+        function redirectToHandle() {
+            // Get the current URL path
+            const path = window.location.pathname;
+
+            // Extract the handle from the URL path
+            var handle = path.substring(1); // Remove the leading "/"
+
+            // Verify the handle format
+            const handlePattern = /^@[\w]+@[\w]+\.[\w]+$/;
+
+            // Check for cases outside the standard handle format
+            if (handle.endsWith(".eth")) { // ENS names
+                if (handle.startsWith("@")) {
+                    handle = handle.substring(1);
+                }
+                document.write(`<head><link rel=\"stylesheet\" href=\"/style.css\"></head><body><h1 style=\"margin-top: 30px;\">That's an ENS name</h1><p>There are many ways to view ENS profiles, here are just a few.</p><div class=\"buttons\"><a href=\"https://rainbow.me/${handle}\">Rainbow</a><a href=\"https://eth.xyz/${handle}\">eth.xyz</a><a href=\"https://eth.co/${handle}\">eth.co</a><a href=\"https://app.ens.domains/${handle}\">ENS Official</a></div><div id=\"footer\">LittleBit's Handle Handler | <a href=\"/about\">About this page</a></div></body>`)
+                return;
+            } else if (handle.endsWith(".bsky.social")) { // Bluesky Social
+                if (handle.startsWith("@")) {
+                    handle = handle.substring(1);
+                }
+                window.location.href = `https://bsky.app/profile/${handle}`;
+                return;
+            } else if (handle.endsWith(".com") || handle.endsWith(".org") || handle.endsWith(".net") || handle.endsWith(".io")) { // Common TLDs
+                if (handle.startsWith("@")) {
+                    handle = handle.substring(1);
+                }
+                document.write(`<head><link rel="stylesheet" href="/style.css"></head><body><h1 style="margin-top: 30px;">That's a website domain</h1><p>You entered a domain name. It could be just a website, but it could also be a Bluesky handle or an ENS name.<br>Decide how you want to view it.</p><div class="buttons"><a href="https://bsky.app/profile/${handle}">View as Bluesky profile</a><a href="https://${handle}">View as Website</a></div><p>View as ENS:</p><div class=\"buttons\"><a href=\"https://rainbow.me/${handle}\">Rainbow</a><a href=\"https://eth.xyz/${handle}\">eth.xyz</a><a href=\"https://eth.co/${handle}\">eth.co</a><a href=\"https://app.ens.domains/${handle}\">ENS Official</a></div><div id=\"footer\">LittleBit's Handle Handler | <a href=\"/about\">About this page</a></div></body>`);
+                return;
+            } else if (!handlePattern.test(handle)) { // If no special cases were met, check if the handle is in the correct format and continue.
+                document.write("<head><link rel=\"stylesheet\" href=\"/style.css\"></head><body><h1 style=\"margin-top: 30px;\">Invalid Handle Format</h1><p>Make sure you included a handle in the format '@username@domain' in the URL path.<div id=\"footer\">LittleBit's Handle Handler | <a href=\"/about\">About this page</a></div></p></body>")
+                return;
+            }
+
+            // Extract the username and domain
+            const [username, domain] = handle.split('@').slice(1);
+
+            // Check for cases within the standard handle format
+            var newUrl;
+            if (domain == "instagram.com") { // Instagram
+                newUrl = `https://www.${domain}/${username}`;
+                window.location.href = newUrl;
+            } else if (domain == "twitter.com" || domain == "x.com") { // Twitter (X)
+                newUrl = `https://www.${domain}/${username}`;
+                window.location.href = newUrl;
+            } else if (domain == "reddit.com") { // Reddit
+                newUrl = `https://www.${domain}/user/${username}`;
+                window.location.href = newUrl;
+            } else if (domain == "hey.xyz") { // Hey (Lens Protocol)
+                newUrl = `https://${domain}/u/${username}`;
+                window.location.href = newUrl;
+            } else if (domain == "lens.xyz") { // Lens Protocol (setup page)
+                newUrl = `https://hey.xyz/u/${username}`; // lens.xyz is the Lens Protocol setup page, so redirect to Hey
+                window.location.href = newUrl;
+            } else if (domain == "orb.club" || domain == "orb.ac") { // Orb Social (also uses Lens Protocol)
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // Check if the user is on a mobile device
+                if (isMobile) { // If on mobile, go to Orb
+                    newUrl = `https://${domain}/@${username}`;
+                    window.location.href = newUrl;
+                } else { // On desktop, prompt the user to visit Hey instead
+                    document.write(`<head><link rel=\"stylesheet\" href=\"/style.css\"></head><body><h1 style=\"margin-top: 30px;\">This handle has no web app</h1><p>You gave a link to Orb Social, which has no web app.<br>Since Orb uses the Lens Protocol, you can view this profile on Hey: <a href=\"https://hey.xyz/u/${username}\">https://hey.xyz/u/${username}</a></p><div id=\"footer\">LittleBit's Handle Handler | <a href=\"/about\">About this page</a></div></body>`);
+                }
+            } else { // Default case
+                newUrl = `https://${domain}/@${username}`;
+                window.location.href = newUrl;
+            }
+        }
+
+        // Invoke the redirect function when the page loads
+        window.onload = redirectToHandle;
+    </script>
+</body>
+</html>RewriteEngine On

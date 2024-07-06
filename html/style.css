@@ -1,0 +1,47 @@
+@charset "utf-8";
+
+@font-face {
+    font-family: tweb_regular;
+    src: url(/TitilliumWeb-Regular.ttf);
+}
+
+@font-face {
+    font-family: tweb_bold;
+    src: url(/TitilliumWeb-Bold.ttf);
+}
+
+body{
+    background-image:linear-gradient(to right, #03a6e7 0%, #27ae60 100%);
+    color: white;
+    font-family: tweb_regular;
+    text-align: center;
+    font-size:20px;
+}
+
+h1{
+    font-family: tweb_bold;
+}
+
+h2{
+    font-family: tweb_bold;
+}
+
+#desc{
+    margin: 10px;
+}
+
+a{
+    color: lightgreen;
+}
+
+.buttons a{
+    background-color: white;
+    padding: 5px 10px 5px 10px;
+    margin: 5px;
+    color: black;
+}
+
+.buttons a:hover{
+    background-color:green;
+    color:white;
+}
