@@ -15,7 +15,7 @@ I want people to be able to improve this, so I'm publishing this as open-source 
 @username@domain:
 - Mastodon
 - Meta Threads
-- Twitter
+- Twitter (twitter.com, x.com)
 - Instagram
 - TikTok
 - YouTube
@@ -23,6 +23,9 @@ I want people to be able to improve this, so I'm publishing this as open-source 
 - Lens Protocol
   - hey.xyz
   - orb.club, orb.ac
+- Farcaster (warpcast.com)
+- Zora
+- GitHub
 - and possibly many others...
 
 Formats without the second @ symbol:

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LittleBit's Handle Handler</title>
 </head>
+
 <body>
     <script>
         // Function to parse the handle and redirect
@@ -18,30 +20,14 @@
             // Verify the handle format
             const handlePattern = /^@[\w]+@[\w]+\.[\w]+$/;
 
-            // Check for cases outside the standard handle format
-            if (handle.endsWith(".eth")) { // ENS names
-                if (handle.startsWith("@")) {
-                    handle = handle.substring(1);
-                }
-                document.write(`<head><link rel=\"stylesheet\" href=\"/style.css\"></head><body><h1 style=\"margin-top: 30px;\">That's an ENS name</h1><p>There are many ways to view ENS profiles, here are just a few.</p><div class=\"buttons\"><a href=\"https://rainbow.me/${handle}\">Rainbow</a><a href=\"https://eth.xyz/${handle}\">eth.xyz</a><a href=\"https://eth.co/${handle}\">eth.co</a><a href=\"https://app.ens.domains/${handle}\">ENS Official</a></div><div id=\"footer\">LittleBit's Handle Handler | <a href=\"/about\">About this page</a></div></body>`)
-                return;
-            } else if (handle.endsWith(".bsky.social")) { // Bluesky Social
-                if (handle.startsWith("@")) {
-                    handle = handle.substring(1);
-                }
-                window.location.href = `https://bsky.app/profile/${handle}`;
-                return;
-            } else if (handle.endsWith(".com") || handle.endsWith(".org") || handle.endsWith(".net") || handle.endsWith(".io")) { // Common TLDs
-                if (handle.startsWith("@")) {
-                    handle = handle.substring(1);
-                }
-                document.write(`<head><link rel="stylesheet" href="/style.css"></head><body><h1 style="margin-top: 30px;">That's a website domain</h1><p>You entered a domain name. It could be just a website, but it could also be a Bluesky handle or an ENS name.<br>Decide how you want to view it.</p><div class="buttons"><a href="https://bsky.app/profile/${handle}">View as Bluesky profile</a><a href="https://${handle}">View as Website</a></div><p>View as ENS:</p><div class=\"buttons\"><a href=\"https://rainbow.me/${handle}\">Rainbow</a><a href=\"https://eth.xyz/${handle}\">eth.xyz</a><a href=\"https://eth.co/${handle}\">eth.co</a><a href=\"https://app.ens.domains/${handle}\">ENS Official</a></div><div id=\"footer\">LittleBit's Handle Handler | <a href=\"/about\">About this page</a></div></body>`);
-                return;
-            } else if (!handlePattern.test(handle)) { // If no special cases were met, check if the handle is in the correct format and continue.
-                document.write("<head><link rel=\"stylesheet\" href=\"/style.css\"></head><body><h1 style=\"margin-top: 30px;\">Invalid Handle Format</h1><p>Make sure you included a handle in the format '@username@domain' in the URL path.<div id=\"footer\">LittleBit's Handle Handler | <a href=\"/about\">About this page</a></div></p></body>")
-                return;
+            if (handlePattern.test(handle)) { // If the handle is in the standard format, run it through the normal checks
+                normalHandleRedirect(handle);
+            } else { // Else, use the special checks
+                specialHandleRedirect(handle);
             }
+        }
 
+        function normalHandleRedirect(handle) {
             // Extract the username and domain
             const [username, domain] = handle.split('@').slice(1);
 
@@ -70,9 +56,39 @@
                 } else { // On desktop, prompt the user to visit Hey instead
                     document.write(`<head><link rel=\"stylesheet\" href=\"/style.css\"></head><body><h1 style=\"margin-top: 30px;\">This handle has no web app</h1><p>You gave a link to Orb Social, which has no web app.<br>Since Orb uses the Lens Protocol, you can view this profile on Hey: <a href=\"https://hey.xyz/u/${username}\">https://hey.xyz/u/${username}</a></p><div id=\"footer\">LittleBit's Handle Handler | <a href=\"/about\">About this page</a></div></body>`);
                 }
+            } else if (domain == "zora.co") { // Zora
+                newUrl = `https://${domain}/${username}`;
+                window.location.href = newUrl;
+            } else if (domain == "warpcast.com") { // Warpcast (Farcaster)
+                newUrl = `https://${domain}/${username}`;
+                window.location.href = newUrl
+            } else if (domain == "github.com") { // GitHub
+                newUrl = `https://${domain}/${username}`;
+                window.location.href = newUrl;
             } else { // Default case
                 newUrl = `https://${domain}/@${username}`;
                 window.location.href = newUrl;
+            }
+        }
+
+        function specialHandleRedirect(handle) {
+            if (handle.startsWith("@")) {
+                handle = handle.substring(1);
+            }
+
+            // Check for cases outside the standard handle format
+            if (handle.endsWith(".eth")) { // ENS names
+                document.write(`<head><link rel=\"stylesheet\" href=\"/style.css\"></head><body><h1 style=\"margin-top: 30px;\">That's an ENS name</h1><p>There are many ways to view ENS profiles, here are just a few.</p><div class=\"buttons\"><a href=\"https://rainbow.me/${handle}\">Rainbow</a><a href=\"https://eth.xyz/${handle}\">eth.xyz</a><a href=\"https://eth.co/${handle}\">eth.co</a><a href=\"https://app.ens.domains/${handle}\">ENS Official</a></div><div id=\"footer\">LittleBit's Handle Handler | <a href=\"/about\">About this page</a></div></body>`)
+                return;
+            } else if (handle.endsWith(".bsky.social")) { // Bluesky Social
+                window.location.href = `https://bsky.app/profile/${handle}`;
+                return;
+            } else if (handle.endsWith(".com") || handle.endsWith(".org") || handle.endsWith(".net") || handle.endsWith(".io")) { // Common TLDs
+                document.write(`<head><link rel="stylesheet" href="/style.css"></head><body><h1 style="margin-top: 30px;">That's a website domain</h1><p>You entered a domain name. It could be just a website, but it could also be a Bluesky handle or an ENS name.<br>Decide how you want to view it.</p><div class="buttons"><a href="https://bsky.app/profile/${handle}">View as Bluesky profile</a><a href="https://${handle}">View as Website</a></div><p>View as ENS:</p><div class=\"buttons\"><a href=\"https://rainbow.me/${handle}\">Rainbow</a><a href=\"https://eth.xyz/${handle}\">eth.xyz</a><a href=\"https://eth.co/${handle}\">eth.co</a><a href=\"https://app.ens.domains/${handle}\">ENS Official</a></div><div id=\"footer\">LittleBit's Handle Handler | <a href=\"/about\">About this page</a></div></body>`);
+                return;
+            } else { // If the handle fails the special checks, it is invalid and an error appears.
+                document.write("<head><link rel=\"stylesheet\" href=\"/style.css\"></head><body><h1 style=\"margin-top: 30px;\">Invalid Handle Format</h1><p>Make sure you included a handle in the format '@username@domain' in the URL path.<div id=\"footer\">LittleBit's Handle Handler | <a href=\"/about\">About this page</a></div></p></body>")
+                return;
             }
         }
 
@@ -80,4 +96,5 @@
         window.onload = redirectToHandle;
     </script>
 </body>
+
 </html>RewriteEngine On
